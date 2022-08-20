@@ -1,0 +1,21 @@
+@import '../../../assets/variables.scss';
+
+
+.form-control{
+   background-color: rgba(255,255,255,.1);
+   border-color:rgba(255,255,255,.1) ;
+   color:$white;
+   font-size: 14px;
+}
+  .btn-success{
+    margin-top: 10px;
+    background: #482e487d;
+    color: $white;
+   }
+   .heading{
+    font-size: 12px;
+    margin-bottom: 0px;
+   }
+   .link{
+    color:$white;
+   }

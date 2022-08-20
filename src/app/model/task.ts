@@ -1,4 +1,7 @@
 export interface ITask{
+    title:string,
+    dueDate:string,
+    assignee:string,
     description:string,
-    done:boolean
+    file:string
 }

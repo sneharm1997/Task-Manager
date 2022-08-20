@@ -1,7 +1,9 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ITask } from 'src/app/model/task';
+import { TaskService } from 'src/app/services/task.service';
+import { DialogContentComponent } from '../dialog-content/dialog-content.component';
 
 @Component({
   selector: 'app-task-manager',
@@ -10,42 +12,97 @@ import { ITask } from 'src/app/model/task';
 })
 export class TaskManagerComponent implements OnInit {
 
-  todoForm !: FormGroup;
-  tasks:ITask[]=[];
-  inProgress:ITask[]=[];
-  done:ITask[]=[];
+  tasks: ITask[] = [];
+  tasksCopy: ITask[] = [];
+  inProgressCopy: ITask[] = [];
+  doneCopy: ITask[] = [];
+  inProgress: ITask[] = [];
+  done: ITask[] = [];
+  filteredString!: string;
+  filteredTasks: ITask[] = [];
+  inToDo: boolean = false;
+  inInProgress: boolean = false;
 
-
-  constructor(private fb:FormBuilder) { }
+  constructor(public dialog: MatDialog, private taskService: TaskService) { }
 
   ngOnInit(): void {
-    this.todoForm=this.fb.group({
-      item:['',Validators.required]
+    this.taskService.tasks$.subscribe(data => {
+      this.tasks = data;
+      this.tasksCopy = data;
+    })
+    this.taskService.inProgress$.subscribe(data => {
+      this.inProgress = data;
+      this.inProgressCopy = data;
+    })
+    this.taskService.done$.subscribe(data => {
+      this.done = data;
+      this.doneCopy = data;
     })
   }
 
-  addTask(event: any){
-this.tasks.push({
-  description:this.todoForm.value.item,
-  done:false
-})
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+    this.dialog.open(DialogContentComponent, {
+      width: '500px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+    });
   }
 
-  deleteTask(i:number){
-    this.tasks.splice(i,1)
+  deleteTask(i: number) {
+    this.taskService.deleteTask(i)
   }
 
-  deleteInProgress(i:number){
-    this.inProgress.splice(i,1)
+  deleteInProgress(i: number) {
+    this.taskService.deleteInProgress(i);
   }
 
-  deleteDone(i:number){
-    this.done.splice(i,1)
+  deleteDone(i: number) {
+    this.taskService.deleteDone(i);
   }
 
-  editTask(i:number){
+  search(searchString: string) {
+    if (searchString.length) {
+      this.filteredTasks = [];
+      this.inInProgress = false;
+      this.inToDo = false;
+      for (let task of this.tasks) {
+        if (task['title'].toLowerCase().includes(searchString.toLowerCase())) {
+          this.filteredTasks.push(task);
+          this.inToDo = true;
+        }
+      }
+      for (let task of this.inProgress) {
+        if (task['title'].toLowerCase().includes(searchString.toLowerCase())) {
+          this.filteredTasks.push(task);
+          this.inInProgress = true;
+        }
+      }
+      for (let task of this.done) {
+        if (task['title'].toLowerCase().includes(searchString.toLowerCase())) {
+          this.filteredTasks.push(task);
+        }
+      }
+      if (this.inToDo) {
+        this.tasks = this.filteredTasks;
+        return this.tasks;
+      }
+      else if (this.inInProgress) {
+        this.inProgress = this.filteredTasks;
+        return this.inProgress
+      }
+      else {
+        this.done = this.filteredTasks;
+        return this.done;
+      }
+    } else {
+      this.tasks = this.tasksCopy;
+      this.inProgress = this.inProgressCopy;
+      this.done = this.doneCopy;
 
+      return this.tasks, this.inProgress, this.done;
+    }
   }
+
 
   drop(event: CdkDragDrop<ITask[]>) {
     if (event.previousContainer === event.container) {

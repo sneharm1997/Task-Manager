@@ -1,36 +1,51 @@
 <div class="task-manager-section">
     <div class="add-new-task-section">
-        <mat-card>
-            <form [formGroup]="todoForm">
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>New Task</mat-label>
-                    <input matInput placeholder="Task" value="Task" formControlName="item">
-                </mat-form-field>
-                <button [disabled]="todoForm.invalid" mat-raised-button color="accent" (click)="addTask($event)">Add New
-                    Task</button>
-            </form>
-        </mat-card>
+        <button mat-raised-button class="btn-green" (click)="openDialog('0ms', '0ms')">Add New Task</button>
+
     </div>
     <div class="tasks-section">
+        <nav class="navbar navbar-light ">
+            <form class="form-inline">
+              <input class="form-control mr-sm-2" type="search" [(ngModel)]="filteredString" name="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" (click)="search(filteredString)" type="submit">Search</button>
+            </form>
+          </nav>
         <div cdkDropListGroup>
             <div class="row">
                 <div class="col-md-4">
                     <div class="example-container">
                         <h2>To do</h2>
-
+                       
                         <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="tasks" class="example-list"
                             (cdkDropListDropped)="drop($event)">
-                            <div class="example-box" *ngFor="let item of tasks, let i=index" cdkDrag>
-                                {{item.description}}
-                                <div class="box">
-                                    <button mat-icon-button color="warn" (click)="deleteTask(i)">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
-                                    <button mat-icon-button color="primary" (click)="editTask(i)">
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
+                    
+                            <div class="example-box" *ngFor="let item of tasks;let i=index" cdkDrag>
+                                <div class="flex">
+                                <h3 class="title">{{item.title}}</h3>
+                                <button mat-icon-button (click)="deleteTask(i)">
+                                    <mat-icon class="font-15">delete</mat-icon>
+                                </button>
+                                </div>
+                                <p *ngIf="item.description" class="desc">{{item.description}}</p>
+                                    <div class="align-flex" *ngIf="item.file">
+                                        <button mat-icon-button >
+                                            <mat-icon class="font-15">attachment</mat-icon>
+                                            <a class="color-white font-12" href="{{item.file}}">{{item.file}}</a>
+                                        </button>
+                                    </div>
+                                    <div class="flex">
+                                    <div  *ngIf="item.dueDate">
+                                        <button mat-icon-button >
+                                            <mat-icon class="font-15">schedule</mat-icon>
+                                            <span class="font-12">{{item.dueDate|date:'d/M/y'}}</span>
+                                        </button>
+                                    </div>
+                                    <div *ngIf="item.assignee">
+                                        <span class="font-12"><b>Assignee</b> : {{item.assignee}}</span>
+                                    </div>
                                 </div>
                             </div>
+                      
                         </div>
                     </div>
 
@@ -41,14 +56,34 @@
 
                         <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="inProgress" class="example-list"
                             (cdkDropListDropped)="drop($event)">
-                            <div class="example-box" *ngFor="let item of inProgress,let i=index" cdkDrag>
-                                {{item.description}}
-                                <div class="box">
-                                    <button mat-icon-button color="warn" (click)="deleteInProgress(i)">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
+                            <div class="example-box" *ngFor="let item of inProgress, let i=index" cdkDrag>
+                                <div class="flex">
+                                <h3 class="title">{{item.title}}</h3>
+                                <button mat-icon-button  (click)="deleteInProgress(i)">
+                                    <mat-icon class="font-15">delete</mat-icon>
+                                </button>
                                 </div>
+                                <p class="desc" *ngIf="item.description">{{item.description}}</p>
+                                    <div class="align-flex" *ngIf="item.file">
+                                        <button mat-icon-button >
+                                            <mat-icon class="font-15">attachment</mat-icon>
+                                            <a class="color-white font-12" href="{{item.file}}">{{item.file}}</a>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex">
+                                        <div  *ngIf="item.dueDate">
+                                            <button mat-icon-button >
+                                                <mat-icon class="font-15">schedule</mat-icon>
+                                                <span class="font-12">{{item.dueDate|date:'d/M/y'}}</span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="item.assignee">
+                                            <span class="font-12"><b>Assignee</b> : {{item.assignee}}</span>
+                                        </div>
+                                    </div>
                             </div>
+                          
                         </div>
                     </div>
 
@@ -59,12 +94,34 @@
 
                         <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="done" class="example-list"
                             (cdkDropListDropped)="drop($event)">
-                            <div class="example-box" *ngFor="let item of done, let i=index" cdkDrag>{{item.description}}
-                                <div class="box">
-                                    <button mat-icon-button color="warn" (click)="deleteDone(i)">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
+                            <div class="example-box" *ngFor="let item of done, let i=index" cdkDrag>
+                                <div class="flex">
+                                <h3 class="title">{{item.title}}</h3>
+                                <p class="badge">
+                                    <span matBadge="Done" matBadgeOverlap="false">Done</span>
+                                  </p>
+                                <button mat-icon-button color="warn" (click)="deleteDone(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
                                 </div>
+                                <p class="desc" *ngIf="item.description">{{item.description}}</p>
+                                    <div class="align-flex" *ngIf="item.file">
+                                        <button mat-icon-button class="bcg-green">
+                                            <mat-icon>attachment</mat-icon>
+                                            <a class="color-white font-12" href="{{item.file}}">{{item.file}}</a>
+                                        </button>
+                                    </div>
+                                    <div class="flex">
+                                        <div  *ngIf="item.dueDate">
+                                            <button mat-icon-button >
+                                                <mat-icon class="font-15">schedule</mat-icon>
+                                                <span class="font-12">{{item.dueDate|date:'d/M/y'}}</span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="item.assignee">
+                                            <span class="font-12"><b>Assignee</b> : {{item.assignee}}</span>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                     </div>

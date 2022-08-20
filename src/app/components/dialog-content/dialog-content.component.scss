@@ -1,0 +1,63 @@
+@import '../../../assets/variables.scss';
+
+.dialog-content {
+    height: 400px;
+    font-size: 14px;
+
+    .align-center {
+        text-align: center;
+    }
+
+    .heading {
+        font-weight: 700;
+    }
+
+    .mb-20 {
+        margin-bottom: 20px;
+    }
+
+    .task-detail {
+        display: grid;
+        margin-bottom: 30px;
+    }
+
+    .label {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .assign-link {
+        color: $white;
+        cursor: pointer;
+    }
+
+    .btn {
+        background: #482e487d;
+        color: $white;
+    }
+}
+
+::ng-deep {
+    .mat-dialog-container {
+        background-color: $background;
+    }
+    ::-webkit-scrollbar {
+        width: 10px;
+      }
+      
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: $background; 
+      }
+       
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: $green; 
+        border-radius: 30px;
+      }
+      
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+      }
+}
