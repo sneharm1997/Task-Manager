@@ -1,0 +1,56 @@
+<div class="dialog-content">
+<form [formGroup]="todoForm">
+    <h3 class="align-center heading mb-20">TASK DETAILS</h3>
+    <div class="task-details">
+        <div class="task-detail">
+            <label class="label">Task Title</label>
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>New Task</mat-label>
+                <input formControlName="newTask" matInput>
+            </mat-form-field>
+        </div>
+        <div class="task-detail">
+            <label class="label">Task Description</label>
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Task Description</mat-label>
+                <textarea matInput formControlName="description"
+                    placeholder="What is the task all about ..."></textarea>
+            </mat-form-field>
+        </div>
+        <div class="task-detail">
+            <label class="label">Attachments</label>
+            <app-file-upload></app-file-upload>
+
+        </div>
+        <div class="task-detail">
+            <label class="label">Due Date</label>
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Choose a date</mat-label>
+                <input matInput formControlName="dueDate" [matDatepicker]="picker">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker">
+                    <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="task-detail">
+            <label class="label">Assign</label>
+            <mat-form-field appearance="fill">
+                <mat-label >Assignee</mat-label>
+                <select matNativeControl formControlName="assignee">
+                    <option value="Sneha R M">Sneha R M</option>
+                    <option value="Ankit Sharma">Ankit Sharma</option>
+                    <option value="Surabhi Dixit">Surabhi Dixit</option>
+                    <option value="Rishab Sharma">Rishab Sharma</option>
+                </select>
+            </mat-form-field>
+            <a class="assign-link" (click)="defaultAssign(todoForm)">Assign it to me</a>
+
+        </div>
+        <div class="align-center ">
+            <button class="mb-20 btn" (click)="addTask(todoForm)" color="accent" mat-raised-button>Add</button>
+        </div>
+    </div>
+</form>
+</div>
